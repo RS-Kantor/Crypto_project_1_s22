@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <climits>
+#pragma once
 #include <iostream>
 #include <map>
 #include <string>
@@ -7,4 +8,15 @@
 
 using namespace std;
 
-void freqsort(string x, vector<pair<char, int>> &out);
+class FreqMap {
+private:
+  map<char, int> singFreqMap;
+  map<string, int> diaFreqMap;
+
+public:
+  FreqMap(string text);
+
+  vector<pair<char, int>> getSingFreqSort();
+
+  vector<pair<string, int>> getDiaFreqSort();
+};

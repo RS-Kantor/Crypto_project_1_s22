@@ -1,18 +1,38 @@
 #include "reld.h"
 
-vector<int> calculate_reld_distance(string text,
-                                    vector<pair<char, int>> &freqMap,
-                                    int freqIdx) {
+vector<int> cal_reld_single(string text, FreqMap &freqMapObj, int freqIdx) {
   vector<int> reld_dists;
+  vector<pair<char, int>> freqTable = freqMapObj.getSingFreqSort();
+
   string t;
   int lastIdx = -1;
   for (int i = 0; i < text.length(); i++) {
-    if (text[i] == freqMap[freqIdx].first) {
+    if (text[i] == freqTable[freqIdx].first) {
       reld_dists.push_back(i - lastIdx);
       lastIdx = i;
       t += '!';
     } else {
       t += text[i];
+    }
+  }
+
+  return reld_dists;
+}
+
+vector<int> cal_reld_double(string text, FreqMap &freqMapObj, int freqIdx) {
+  vector<int> reld_dists;
+  vector<pair<string, int>> freqTable = freqMapObj.getDiaFreqSort();
+
+  string t;
+  int lastIdx = -1;
+  for (int i = 0; i < text.length() - 1; i++) {
+    string s = text.substr(i, 2);
+    if (s == freqTable[freqIdx].first) {
+      reld_dists.push_back(i - lastIdx);
+      lastIdx = i;
+      t += '!';
+    } else {
+      t += s;
     }
   }
 
@@ -39,20 +59,24 @@ int get_reld_diff(vector<int> reldDistCipher, vector<int> reldDistCandidate) {
 
 string analyzeReld(string cipher, vector<string> &candidates) {
 
-  vector<pair<char, int>> cipher_freq;
-  freqsort(cipher, cipher_freq);
+  FreqMap cipherMap(cipher);
 
   int best_reld = INT_MAX;
   string best_candidate;
   for (int i = 0; i < candidates.size(); i++) {
-    vector<pair<char, int>> candidate_freq;
-    freqsort(candidates[i], candidate_freq);
+    FreqMap candidateMap(candidates[i]);
 
     int reld_diff_avg = 0;
-    for (int j = 0; j < 8; j++) {
-      vector<int> reld_dists = calculate_reld_distance(cipher, cipher_freq, j);
+    for (int j = 0; j < 3; j++) {
+      vector<int> reld_dists = cal_reld_single(cipher, cipherMap, j);
       vector<int> reld_dists_candidate =
-          calculate_reld_distance(candidates[i], candidate_freq, j);
+          cal_reld_single(candidates[i], candidateMap, j);
+      reld_diff_avg += get_reld_diff(reld_dists, reld_dists_candidate);
+    }
+    for (int j = 0; j < 2; j++) {
+      vector<int> reld_dists = cal_reld_double(cipher, cipherMap, j);
+      vector<int> reld_dists_candidate =
+          cal_reld_double(candidates[i], candidateMap, j);
       reld_diff_avg += get_reld_diff(reld_dists, reld_dists_candidate);
     }
 

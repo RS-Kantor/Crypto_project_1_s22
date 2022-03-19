@@ -1,24 +1,45 @@
 #include "freq.h"
 
-void createFreqMap(string x, map<char, int> &freqMap) {
-  for (int i = 0; i < x.length(); i++) {
-    if (freqMap.find(x[i]) != freqMap.end()) {
-      freqMap[x[i]] += 1;
+bool cmp(pair<char, int> a, pair<char, int> b) { return a.second > b.second; }
+bool cmpStr(pair<string, int> a, pair<string, int> b) {
+  return a.second > b.second;
+}
+
+map<char, int> singFreqMap;
+map<string, int> diaFreqMap;
+
+FreqMap::FreqMap(string text) {
+  for (int i = 0; i < text.length(); i++) {
+    if (singFreqMap.find(text[i]) == singFreqMap.end()) {
+      singFreqMap[text[i]] = 1;
     } else {
-      freqMap[x[i]] = 1;
+      singFreqMap[text[i]] += 1;
+    }
+  }
+  for (int i = 0; i < text.length() - 1; i++) {
+    string s = text.substr(i, 2);
+    if (diaFreqMap.find(s) == diaFreqMap.end()) {
+      diaFreqMap[s] = 1;
+    } else {
+      diaFreqMap[s] += 1;
     }
   }
 }
 
-bool cmp(pair<char, int> a, pair<char, int> b) { return a.second > b.second; }
-
-void freqsort(string x, vector<pair<char, int>> &out) {
-  map<char, int> freqMap;
-  createFreqMap(x, freqMap);
-
-  for (auto i : freqMap) {
-    out.push_back(i);
+vector<pair<char, int>> FreqMap::getSingFreqSort() {
+  vector<pair<char, int>> freqTable;
+  for (auto i : singFreqMap) {
+    freqTable.push_back(i);
   }
+  sort(freqTable.begin(), freqTable.end(), cmp);
+  return freqTable;
+}
 
-  sort(out.begin(), out.end(), cmp);
+vector<pair<string, int>> FreqMap::getDiaFreqSort() {
+  vector<pair<string, int>> freqTable;
+  for (auto i : diaFreqMap) {
+    freqTable.push_back(i);
+  }
+  sort(freqTable.begin(), freqTable.end(), cmpStr);
+  return freqTable;
 }
