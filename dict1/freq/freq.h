@@ -1,5 +1,3 @@
-#include "noiseApproach/noise.h"
-#include "relativeDistance/reld.h"
 #include <algorithm>
 #include <climits>
 #include <iostream>
@@ -9,4 +7,4 @@
 
 using namespace std;
 
-string tryDict1(string ciphertext, vector<string> candidates);
+void freqsort(string x, vector<pair<char, int>> &out);

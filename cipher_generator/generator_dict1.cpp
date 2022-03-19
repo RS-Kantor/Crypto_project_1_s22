@@ -76,16 +76,16 @@ int main() {
   s = candidates[string_to_use];
 
   // generation
-  int message_pointer = s.length() - 1;
+  int message_pointer = 0;
   int num_of_randTexts = 0;
-  while (message_pointer >= 0) {
+  while (message_pointer < s.length()) {
     if (randomizer() % 100 < prob_of_random_ciphertext) {
       out.push_back(key[randomizer() % key.size()]);
       num_of_randTexts++;
       continue;
     }
     out.push_back(key[get_pos(s[message_pointer])]);
-    message_pointer--;
+    message_pointer++;
   }
 
   cout << "Og text: " << s << endl;

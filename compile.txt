@@ -1,0 +1,1 @@
+g++ -std=c++11 main.cpp dict1/dict1.cpp dict1/freq/freq.cpp dict1/noiseApproach/noise.cpp dict1/relativeDistance/reld.cpp 
